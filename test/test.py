@@ -1,16 +1,21 @@
 #!/usr/bin/env python
+"""Usage:
+    %(script)s <url>
+"""
 from __future__ import print_function
+import os
 import subprocess
 import sys
 
 try:
+    import docopt
     import requests
 except ImportError:
     if __name__ != '__main__':
         raise
     try:
         import magicreq
-        magicreq.magic(['requests'])
+        magicreq.magic(['docopt', 'requests'])
     except ImportError:
         url = 'https://raw.githubusercontent.com/reversefold/magicreq/0.1.0/bootstrap.py'
         # url = 'https://raw.githubusercontent.com/reversefold/magicreq/master/bootstrap.py'
@@ -20,5 +25,12 @@ except ImportError:
         python.wait()
         sys.exit(curl.returncode or python.returncode)
 
-print(requests.get(sys.argv[1]).text)
-sys.exit(13)
+
+def main():
+    args = docopt.docopt(__doc__ % {'script': os.path.basename(__file__)})
+    print(requests.get(args['<url>']).text)
+    sys.exit(13)
+
+
+if __name__ == '__main__':
+    main()
