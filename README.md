@@ -19,7 +19,7 @@ except ImportError:
         import magicreq
         magicreq.magic(['requests'])
     except ImportError:
-        curl = subprocess.Popen(['curl', '-sS', 'https://raw.githubusercontent.com/reversefold/magicreq/0.1.0/bootstrap.py'], stdout=subprocess.PIPE)
+        curl = subprocess.Popen(['curl', '-sS', 'https://raw.githubusercontent.com/reversefold/magicreq/0.1.1/bootstrap.py'], stdout=subprocess.PIPE)
         python = subprocess.Popen([sys.executable, '-'] + sys.argv, stdin=curl.stdout)
         curl.wait()
         python.wait()
