@@ -27,10 +27,10 @@ def magic(requirements):
             subprocess.check_call(
                 """
                     set -e
-                    VENV_VERSION="15.0.2"
+                    VENV_VERSION="15.0.3"
                     # This appears to be a new pypi layout which may or may not be predictable.
                     # Check that this works when updating VENV_VERSION
-                    PYPI_VENV_BASE="https://pypi.python.org/packages/5c/79/5dae7494b9f5ed061cff9a8ab8d6e1f02db352f3facf907d9eb614fb80e9"
+                    PYPI_VENV_BASE="https://pypi.python.org/packages/8b/2c/c0d3e47709d0458816167002e1aa3d64d03bdeb2a9d57c5bd18448fd24cd"
                     PY_ENV0_DIR="%s"
                     rm -rf "${PY_ENV0_DIR}"
 
