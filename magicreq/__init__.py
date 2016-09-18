@@ -5,25 +5,24 @@ import sys
 
 
 def magic(requirements):
+    PY_ENV0_DIR = '_venv'
+    VENV_PYTHON = os.path.join(PY_ENV0_DIR, 'bin', 'python')
     if len(sys.argv) > 1 and sys.argv[1] == '--bootstrapped':
         BOOTSTRAPPED = True
-        # IN_VENV = True
+        IN_VENV = True
         sys.argv = [sys.argv[0]] + sys.argv[2:]
     else:
         BOOTSTRAPPED = False
-        # if len(sys.argv) > 1 and sys.argv[1] == '--in-venv':
-        #     IN_VENV = True
-        #     sys.argv = [sys.argv[0]] + sys.argv[2:]
-        # else:
-        #     IN_VENV = False
+        if os.path.realpath(sys.executable) == os.path.realpath(VENV_PYTHON):
+            IN_VENV = True
+        else:
+            IN_VENV = False
 
     # Bootstrap a python virtualenv which does not rely on any os-level installed packages.
-    PY_ENV0_DIR = '_venv'
-    VENV_PYTHON = os.path.join(PY_ENV0_DIR, 'bin', 'python')
     # If the virtualenv already appears to exist, try running it without recreating the virtualenv first.
     # If that fails we'll run the script below to fix up the virtualenv.
     # if IN_VENV or not os.path.exists(VENV_PYTHON):
-    if not os.path.exists(VENV_PYTHON):
+    if IN_VENV or not os.path.exists(VENV_PYTHON):
         if not BOOTSTRAPPED:
             subprocess.check_call(
                 """
@@ -55,17 +54,17 @@ def magic(requirements):
                 shell=True,
                 stdout=sys.stderr
             )
-    subprocess.check_call(
-        """
-            set -e
-            # TODO: Support or remove?
-            . "%s/bin/activate"
-            PIP_OPTIONS=""
-            pip install ${PIP_OPTIONS} %s
-        """ % (PY_ENV0_DIR, ' '.join(pipes.quote(r) for r in requirements),),
-        shell=True,
-        stdout=sys.stderr
-    )
+        subprocess.check_call(
+            """
+                set -e
+                . "%s/bin/activate"
+                # TODO: Support or remove?
+                PIP_OPTIONS=""
+                pip install ${PIP_OPTIONS} %s
+            """ % (PY_ENV0_DIR, ' '.join(pipes.quote(r) for r in requirements),),
+            shell=True,
+            stdout=sys.stderr
+        )
     # call this script again using the virtualenv's python
     # if os.path.basename(sys.argv[0]) == 'python':
     #     argv = [sys.argv[0], '--in-venv'] + sys.argv[1:]
