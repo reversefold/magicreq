@@ -3,8 +3,6 @@ import os
 import subprocess
 import sys
 
-print(sys.argv)
-
 # Bootstrap a python virtualenv which does not rely on any os-level installed packages.
 PY_ENV0_DIR = '_venv'
 VENV_PYTHON = os.path.join(PY_ENV0_DIR, 'bin', 'python')
