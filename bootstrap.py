@@ -8,7 +8,7 @@ PY_ENV0_DIR = '_venv'
 VENV_PYTHON = os.path.join(PY_ENV0_DIR, 'bin', 'python')
 subprocess.check_call(
     """
-        set -ex
+        set -e
         VENV_VERSION="15.0.2"
         # This appears to be a new pypi layout which may or may not be predictable.
         # Check that this works when updating VENV_VERSION

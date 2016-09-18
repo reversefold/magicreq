@@ -27,7 +27,7 @@ def magic(requirements):
         if not BOOTSTRAPPED:
             subprocess.check_call(
                 """
-                    set -ex
+                    set -e
                     VENV_VERSION="15.0.2"
                     # This appears to be a new pypi layout which may or may not be predictable.
                     # Check that this works when updating VENV_VERSION
@@ -57,7 +57,7 @@ def magic(requirements):
             )
     subprocess.check_call(
         """
-            set -ex
+            set -e
             # TODO: Support or remove?
             . "%s/bin/activate"
             PIP_OPTIONS=""
