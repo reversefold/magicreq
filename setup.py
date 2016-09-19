@@ -16,5 +16,5 @@ setup(
     ],
     scripts=[
     ],
-    url='http://https://github.com/reversefold/magicreq',
+    url='https://github.com/reversefold/magicreq',
 )
