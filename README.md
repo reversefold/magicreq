@@ -91,3 +91,5 @@ try:
 except ImportError:
     ...
 ```
+
+Available on [pypi](https://pypi.python.org/pypi/magicreq).
