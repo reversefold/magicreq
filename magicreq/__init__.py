@@ -7,7 +7,7 @@ import sys
 from magicreq import bootstrap
 
 
-def magic(requirements, pip_options=''):
+def magic(requirements, pip_options=None, pypi_url=None, venv_version=None):
     PY_ENV0_DIR = '_venv'
     VENV_PYTHON = os.path.join(PY_ENV0_DIR, 'bin', 'python')
     if len(sys.argv) > 1 and sys.argv[1] == '--bootstrapped':
@@ -27,14 +27,18 @@ def magic(requirements, pip_options=''):
     # if IN_VENV or not os.path.exists(VENV_PYTHON):
     if IN_VENV or not os.path.exists(VENV_PYTHON):
         if not BOOTSTRAPPED:
-            bootstrap.bootstrap(pip_options=pip_options)
+            bootstrap.bootstrap(pip_options=pip_options, pypi_url=pypi_url, venv_version=venv_version)
         subprocess.check_call(
             """
                 set -e
-                . "%s/bin/activate"
+                . %s/bin/activate
                 PIP_OPTIONS=%s
                 pip install ${PIP_OPTIONS} %s
-            """ % (PY_ENV0_DIR, pipes.quote(pip_options), ' '.join(pipes.quote(r) for r in requirements),),
+            """ % (
+                pipes.quote(PY_ENV0_DIR),
+                pipes.quote(pip_options if pip_options is not None else ''),
+                ' '.join(pipes.quote(r) for r in requirements),
+            ),
             shell=True,
             stdout=sys.stderr
         )

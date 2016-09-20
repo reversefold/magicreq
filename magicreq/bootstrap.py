@@ -17,8 +17,14 @@ class Error(Exception):
 
 
 # Bootstrap a python virtualenv which does not rely on any os-level installed packages.
-def bootstrap(pip_options='', venv_version='15.0.3', pypi_url='https://pypi.python.org/pypi'):
-    pypi_url = 'http://artidev.shn.io:8081/artifactory/api/pypi/pypi'
+def bootstrap(pip_options=None, venv_version=None, pypi_url=None):
+    if pip_options is None:
+        pip_options = ''
+    if venv_version is None:
+        venv_version = '15.0.3'
+    if pypi_url is None:
+        pypi_url = 'https://pypi.python.org'
+
     # TODO: Automatically put pypi_url in pip_options?
 
     VENV_DIRNAME = 'virtualenv-%s' % (venv_version,)
