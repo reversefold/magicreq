@@ -30,7 +30,7 @@ except ImportError:
 
         # Download the bootstrap script
         curl = subprocess.Popen(
-            ['curl', '-sS', 'https://raw.githubusercontent.com/reversefold/magicreq/0.2.0/bootstrap.py'],
+            ['curl', '-sS', 'https://raw.githubusercontent.com/reversefold/magicreq/0.3.0/magicreq/bootstrap.py'],
             stdout=subprocess.PIPE
         )
         # pipe the bootstrap script into python

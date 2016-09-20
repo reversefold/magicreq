@@ -4,6 +4,9 @@ import subprocess
 import sys
 
 
+from magicreq import bootstrap
+
+
 def magic(requirements, pip_options=''):
     PY_ENV0_DIR = '_venv'
     VENV_PYTHON = os.path.join(PY_ENV0_DIR, 'bin', 'python')
@@ -24,36 +27,7 @@ def magic(requirements, pip_options=''):
     # if IN_VENV or not os.path.exists(VENV_PYTHON):
     if IN_VENV or not os.path.exists(VENV_PYTHON):
         if not BOOTSTRAPPED:
-            subprocess.check_call(
-                """
-                    set -e
-                    VENV_VERSION="15.0.3"
-                    # This appears to be a new pypi layout which may or may not be predictable.
-                    # Check that this works when updating VENV_VERSION
-                    PYPI_VENV_BASE="https://pypi.python.org/packages/8b/2c/c0d3e47709d0458816167002e1aa3d64d03bdeb2a9d57c5bd18448fd24cd"
-                    PY_ENV0_DIR="%s"
-                    rm -rf "${PY_ENV0_DIR}"
-
-                    PIP_OPTIONS=%s
-
-                    VENV_DIRNAME="virtualenv-${VENV_VERSION}"
-                    tgz_file="${VENV_DIRNAME}.tar.gz"
-                    venv_url="${PYPI_VENV_BASE}/${tgz_file}"
-
-                    curl -sS -O "${venv_url}"
-                    tar xzf "${tgz_file}"
-                    python "${VENV_DIRNAME}/virtualenv.py" --no-pip --no-wheel --no-setuptools --no-site-packages --always-copy "${PY_ENV0_DIR}"
-                    curl -sS https://bootstrap.pypa.io/get-pip.py | "${PY_ENV0_DIR}/bin/python" - ${PIP_OPTIONS}
-                    "${PY_ENV0_DIR}/bin/pip" install ${PIP_OPTIONS} "${tgz_file}"
-                    rm -rf "${VENV_DIRNAME}" "${tgz_file}"
-
-                    . "${PY_ENV0_DIR}/bin/activate"
-                    pip install ${PIP_OPTIONS} -U pip setuptools wheel
-                    pip install ${PIP_OPTIONS} -U magicreq
-                """ % (PY_ENV0_DIR, pipes.quote(pip_options)),
-                shell=True,
-                stdout=sys.stderr
-            )
+            bootstrap.bootstrap(pip_options=pip_options)
         subprocess.check_call(
             """
                 set -e

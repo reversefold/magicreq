@@ -17,8 +17,8 @@ except ImportError:
         import magicreq
         magicreq.magic(['docopt', 'requests'])
     except ImportError:
-        url = 'https://raw.githubusercontent.com/reversefold/magicreq/0.1.0/bootstrap.py'
-        # url = 'https://raw.githubusercontent.com/reversefold/magicreq/master/bootstrap.py'
+        url = 'https://raw.githubusercontent.com/reversefold/magicreq/0.3.0/magicreq/bootstrap.py'
+        # url = 'https://raw.githubusercontent.com/reversefold/magicreq/master/magicreq/bootstrap.py'
         curl = subprocess.Popen(['curl', '-sS', url], stdout=subprocess.PIPE)
         python = subprocess.Popen([sys.executable, '-'] + sys.argv, stdin=curl.stdout)
         curl.wait()
