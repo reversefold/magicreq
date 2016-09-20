@@ -20,7 +20,6 @@ subprocess.check_call(
         # This appears to be a new pypi layout which may or may not be predictable.
         # Check that this works when updating VENV_VERSION
         PYPI_VENV_BASE="https://pypi.python.org/packages/8b/2c/c0d3e47709d0458816167002e1aa3d64d03bdeb2a9d57c5bd18448fd24cd"
-
         PY_ENV0_DIR="%s"
         rm -rf "${PY_ENV0_DIR}"
 
@@ -39,9 +38,10 @@ subprocess.check_call(
 
         . "${PY_ENV0_DIR}/bin/activate"
         pip install ${PIP_OPTIONS} -U pip setuptools wheel
-        pip install ${PIP_OPTIONS} magicreq
-    """ % (PY_ENV0_DIR, pipes.quote(PIP_OPTIONS)),
-    shell=True
+        pip install ${PIP_OPTIONS} -U magicreq
+    """ % (PY_ENV0_DIR, pipes.quote(pip_options)),
+    shell=True,
+    stdout=sys.stderr
 )
 
 # call this script again using the virtualenv's python

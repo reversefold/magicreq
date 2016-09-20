@@ -42,7 +42,7 @@ def magic(requirements, pip_options=''):
 
                     curl -sS -O "${venv_url}"
                     tar xzf "${tgz_file}"
-                    python "${VENV_DIRNAME}/virtualenv.py"  --no-pip --no-wheel --no-setuptools --no-site-packages --always-copy "${PY_ENV0_DIR}"
+                    python "${VENV_DIRNAME}/virtualenv.py" --no-pip --no-wheel --no-setuptools --no-site-packages --always-copy "${PY_ENV0_DIR}"
                     curl -sS https://bootstrap.pypa.io/get-pip.py | "${PY_ENV0_DIR}/bin/python" - ${PIP_OPTIONS}
                     "${PY_ENV0_DIR}/bin/pip" install ${PIP_OPTIONS} "${tgz_file}"
                     rm -rf "${VENV_DIRNAME}" "${tgz_file}"
