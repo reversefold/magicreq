@@ -4,7 +4,7 @@ import subprocess
 import sys
 
 
-def magic(requirements):
+def magic(requirements, pip_options=''):
     PY_ENV0_DIR = '_venv'
     VENV_PYTHON = os.path.join(PY_ENV0_DIR, 'bin', 'python')
     if len(sys.argv) > 1 and sys.argv[1] == '--bootstrapped':
@@ -34,8 +34,7 @@ def magic(requirements):
                     PY_ENV0_DIR="%s"
                     rm -rf "${PY_ENV0_DIR}"
 
-                    # TODO: Support or remove?
-                    PIP_OPTIONS=""
+                    PIP_OPTIONS=%s
 
                     VENV_DIRNAME="virtualenv-${VENV_VERSION}"
                     tgz_file="${VENV_DIRNAME}.tar.gz"
@@ -50,7 +49,8 @@ def magic(requirements):
 
                     . "${PY_ENV0_DIR}/bin/activate"
                     pip install ${PIP_OPTIONS} -U pip setuptools wheel
-                """ % (PY_ENV0_DIR,),
+                    pip install ${PIP_OPTIONS} -U magicreq
+                """ % (PY_ENV0_DIR, pipes.quote(pip_options)),
                 shell=True,
                 stdout=sys.stderr
             )
@@ -58,10 +58,9 @@ def magic(requirements):
             """
                 set -e
                 . "%s/bin/activate"
-                # TODO: Support or remove?
-                PIP_OPTIONS=""
+                PIP_OPTIONS=%s
                 pip install ${PIP_OPTIONS} %s
-            """ % (PY_ENV0_DIR, ' '.join(pipes.quote(r) for r in requirements),),
+            """ % (PY_ENV0_DIR, pipes.quote(pip_options), ' '.join(pipes.quote(r) for r in requirements),),
             shell=True,
             stdout=sys.stderr
         )

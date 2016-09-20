@@ -1,11 +1,18 @@
 from __future__ import print_function
 import os
+import pipes
 import subprocess
 import sys
 
 # Bootstrap a python virtualenv which does not rely on any os-level installed packages.
 PY_ENV0_DIR = '_venv'
 VENV_PYTHON = os.path.join(PY_ENV0_DIR, 'bin', 'python')
+PIP_OPTIONS_PREFIX = 'PIP_OPTIONS:'
+if len(sys.argv) > 1 and sys.argv[1].startswith(PIP_OPTIONS_PREFIX):
+    PIP_OPTIONS = sys.argv[1][len(PIP_OPTIONS_PREFIX):]
+    sys.argv = sys.argv[0:1] + sys.argv[2:]
+else:
+    PIP_OPTIONS = ''
 subprocess.check_call(
     """
         set -e
@@ -17,8 +24,7 @@ subprocess.check_call(
         PY_ENV0_DIR="%s"
         rm -rf "${PY_ENV0_DIR}"
 
-        # TODO: Support or remove?
-        PIP_OPTIONS=""
+        PIP_OPTIONS=%s
 
         VENV_DIRNAME="virtualenv-${VENV_VERSION}"
         tgz_file="${VENV_DIRNAME}.tar.gz"
@@ -34,7 +40,7 @@ subprocess.check_call(
         . "${PY_ENV0_DIR}/bin/activate"
         pip install ${PIP_OPTIONS} -U pip setuptools wheel
         pip install ${PIP_OPTIONS} magicreq
-    """ % (PY_ENV0_DIR,),
+    """ % (PY_ENV0_DIR, pipes.quote(PIP_OPTIONS)),
     shell=True
 )
 
