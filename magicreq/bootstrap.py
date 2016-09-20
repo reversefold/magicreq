@@ -1,33 +1,51 @@
 from __future__ import print_function
+from xml.etree import ElementTree
 import os
 import pipes
 import subprocess
 import sys
+import urllib2
+
 
 PY_ENV0_DIR = '_venv'
 VENV_PYTHON = os.path.join(PY_ENV0_DIR, 'bin', 'python')
 PIP_OPTIONS_PREFIX = 'PIP_OPTIONS:'
 
 
+class Error(Exception):
+    pass
+
+
 # Bootstrap a python virtualenv which does not rely on any os-level installed packages.
-def bootstrap(pip_options=''):
+def bootstrap(pip_options='', venv_version='15.0.3', pypi_url='https://pypi.python.org/pypi'):
+    pypi_url = 'http://artidev.shn.io:8081/artifactory/api/pypi/pypi'
+    # TODO: Automatically put pypi_url in pip_options?
+
+    VENV_DIRNAME = 'virtualenv-%s' % (venv_version,)
+    tgz_file = '%s.tar.gz' % (VENV_DIRNAME,)
+
+    # Note: Would use the json or xmlrpc APIs but we need to use the simple API to support artifactory
+    tree = ElementTree.parse(urllib2.urlopen('%s/simple/virtualenv/' % (pypi_url,)))
+    found = [a for a in tree.getroot().find('body').findall('a') if a.text == tgz_file]
+    if not found:
+        raise Error('Could not find virtualenv version %r with pypi url %r' % (venv_version, pypi_url))
+    href = found[0].attrib['href']
+    if not href.startswith('../../'):
+        raise Error('Found virtualenv href does not start with "../../": %r' % (href,))
+    venv_url = '%s/%s' % (pypi_url, href[6:])
+
     subprocess.check_call(
         """
             set -e
-            VENV_VERSION="15.0.3"
-            # This appears to be a new pypi layout which may or may not be predictable.
-            # Check that this works when updating VENV_VERSION
-            PYPI_VENV_BASE="https://pypi.python.org/packages/8b/2c/c0d3e47709d0458816167002e1aa3d64d03bdeb2a9d57c5bd18448fd24cd"
-            PY_ENV0_DIR="%s"
-            rm -rf "${PY_ENV0_DIR}"
-
+            PY_ENV0_DIR=%s
             PIP_OPTIONS=%s
+            VENV_DIRNAME=%s
+            tgz_file=%s
+            venv_url=%s
 
-            VENV_DIRNAME="virtualenv-${VENV_VERSION}"
-            tgz_file="${VENV_DIRNAME}.tar.gz"
-            venv_url="${PYPI_VENV_BASE}/${tgz_file}"
+            rm -rf "${PY_ENV0_DIR}" "${VENV_DIRNAME}" "${tgz_file}"
 
-            curl -sS -O "${venv_url}"
+            curl -sS "${venv_url}" > "${tgz_file}"
             tar xzf "${tgz_file}"
             python "${VENV_DIRNAME}/virtualenv.py" --no-pip --no-wheel --no-setuptools --no-site-packages --always-copy "${PY_ENV0_DIR}"
             curl -sS https://bootstrap.pypa.io/get-pip.py | "${PY_ENV0_DIR}/bin/python" - ${PIP_OPTIONS}
@@ -37,7 +55,13 @@ def bootstrap(pip_options=''):
             . "${PY_ENV0_DIR}/bin/activate"
             pip install ${PIP_OPTIONS} -U pip setuptools wheel
             pip install ${PIP_OPTIONS} -U magicreq
-        """ % (PY_ENV0_DIR, pipes.quote(pip_options)),
+        """ % (
+            pipes.quote(PY_ENV0_DIR),
+            pipes.quote(pip_options),
+            pipes.quote(VENV_DIRNAME),
+            pipes.quote(tgz_file),
+            pipes.quote(venv_url),
+        ),
         shell=True,
         stdout=sys.stderr
     )
