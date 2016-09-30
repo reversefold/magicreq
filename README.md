@@ -102,7 +102,7 @@ except ImportError:
 
 ## The requirements.txt method
 
-If you have a requirements.txt already written for your project or script then the magicreq code becomes entirely boilerplate as you can use the requirements.txt to both check for installed packages and tot ell magicreq what needs to be installed.
+If you have a requirements.txt already written for your project or script then the magicreq code becomes entirely boilerplate as you can use the requirements.txt to both check for installed packages and to tell magicreq what needs to be installed.
 
 A small caveat: this method may not work if you have anything in your requirements.txt which is not a requirement (such as including `--index-url` or another option).
 
