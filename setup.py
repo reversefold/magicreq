@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERSION = '0.3.0'
+VERSION = '0.4.0'
 
 setup(
     name='magicreq',
@@ -12,9 +12,5 @@ setup(
     description='magicreq',
     long_description="""magicreq""",
     packages=find_packages(),
-    install_requires=[
-    ],
-    scripts=[
-    ],
     url='https://github.com/reversefold/magicreq',
 )
