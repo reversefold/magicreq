@@ -8,7 +8,8 @@ import urllib2
 
 
 PY_ENV0_DIR = '_venv'
-VENV_PYTHON = os.path.join(PY_ENV0_DIR, 'bin', 'python')
+PY_ENV0_BIN = os.path.join(PY_ENV0_DIR, 'bin')
+VENV_PYTHON = os.path.join(PY_ENV0_BIN, 'python')
 PIP_OPTIONS_PREFIX = 'PIP_OPTIONS'
 VENV_VERSION_PREFIX = 'VENV_VERSION'
 PYIPI_URL_PREFIX = 'PYPI_URL'
@@ -85,13 +86,20 @@ def main():
     found = True
     while found:
         found = False
-        for prefix in [PIP_OPTIONS_PREFIX, VENV_VERSION_PREFIX, PYIPI_URL_PREFIX, GET_PIP_URL_PREFIX]:
+        for prefix in [
+            PIP_OPTIONS_PREFIX, VENV_VERSION_PREFIX, PYIPI_URL_PREFIX, GET_PIP_URL_PREFIX
+        ]:
             if len(sys.argv) > 1 and sys.argv[1].startswith(prefix):
                 found = True
                 kwargs[prefix.lower()] = sys.argv[1][len(prefix) + 1:]
                 sys.argv = sys.argv[0:1] + sys.argv[2:]
 
     bootstrap(**kwargs)
+    # update the PATH to include the virtualenv's bin directory
+    os.environ['PATH'] = os.pathsep.join(
+        [PY_ENV0_BIN]
+        + os.environ.get('PATH', '').split(os.pathsep)
+    )
     # call this script again using the virtualenv's python
     os.execv(VENV_PYTHON, [VENV_PYTHON, sys.argv[1], '--bootstrapped'] + sys.argv[2:])
     # should never be called, but include it for safety
