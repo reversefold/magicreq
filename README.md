@@ -124,7 +124,9 @@ try:
 
 # We're expecting ImportError or pkg_resources.ResolutionError but since pkg_resources might not be importable,
 # we're just catching Exception.
-except Exception:
+except Exception as exc:
+    if not isinstance(exc, ImportError) and isinstance(exc, pkg_resources.VersionConflict):
+        raise
     # Only use magicreq if this is the script being run. Can be omitted if you don't use this file
     # as a module elsewhere.
     if __name__ != '__main__':
@@ -172,7 +174,9 @@ You can also configure how magicreq downloads its files. This can be useful if y
 
 ```python
 ...
-except Exception:
+except Exception as exc:
+    if not isinstance(exc, ImportError) and isinstance(exc, pkg_resources.VersionConflict):
+        raise
     # You can set any options you want to pass to pip here.
     # This example sets an alternate url for pypi to download packages.
     PIP_OPTIONS = ('--index-url http://my.artifactory.host/artifactory/api/pypi/pypi/simple '
