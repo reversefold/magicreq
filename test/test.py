@@ -7,10 +7,14 @@ import os
 import subprocess
 import sys
 
+REQUIREMENTS = [line.strip() for line in iter(open('requirements.txt').readline, '') if line.strip()]
+
 try:
-    import docopt
-    import requests
-except ImportError:
+    import pkg_resources
+    pkg_resources.require(REQUIREMENTS)
+    # import docopt
+    # import requests
+except Exception as exc:
     # PIP_OPTIONS = '--index-url http://localhost:8080/pypi/simple/ --trusted-host localhost'
     # VENV_VERSION = '15.0.2'
     # PYPI_URL = 'http://localhost:8080/api/pypi/pypi'
@@ -27,7 +31,7 @@ except ImportError:
             # get_pip_url=GET_PIP_URL
         )
     except ImportError:
-        url = 'https://raw.githubusercontent.com/reversefold/magicreq/0.3.0/magicreq/bootstrap.py'
+        url = 'https://raw.githubusercontent.com/reversefold/magicreq/0.4.0/magicreq/bootstrap.py'
         # url = 'https://raw.githubusercontent.com/reversefold/magicreq/master/magicreq/bootstrap.py'
         # url = 'http://localhost:8000/magicreq/bootstrap.py'
         curl = subprocess.Popen(['curl', '-sS', url], stdout=subprocess.PIPE)
