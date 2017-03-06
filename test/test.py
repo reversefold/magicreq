@@ -24,7 +24,7 @@ except Exception as exc:
     try:
         import magicreq
         magicreq.magic(
-            ['docopt', 'requests'],
+            REQUIREMENTS,
             # pip_options=PIP_OPTIONS,
             # pypi_url=PYPI_URL,
             # venv_version=VENV_VERSION,
@@ -49,6 +49,10 @@ except Exception as exc:
         curl.wait()
         python.wait()
         sys.exit(curl.returncode or python.returncode)
+
+
+import docopt
+import requests
 
 
 def main():
