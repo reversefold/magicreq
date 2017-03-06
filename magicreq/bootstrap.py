@@ -55,6 +55,11 @@ def bootstrap(pip_options=None, venv_version=None, pypi_url=None, get_pip_url=No
             VENV_FILE=%s
             VENV_URL=%s
             GET_PIP_URL=%s
+            # Note: This is needed to support running magicreq when the path includes a space as
+            # the pip script in the virtualenv will have a broken shebang in it.
+            function venv_pip() {
+                "${PY_ENV0_DIR}/bin/python" "${PY_ENV0_DIR}/bin/pip" "$@"
+            }
 
             rm -rf "${PY_ENV0_DIR}" "${VENV_DIRNAME}" "${VENV_FILE}"
 
@@ -62,12 +67,12 @@ def bootstrap(pip_options=None, venv_version=None, pypi_url=None, get_pip_url=No
             tar xzf "${VENV_FILE}"
             python "${VENV_DIRNAME}/virtualenv.py" --no-pip --no-wheel --no-setuptools --no-site-packages --always-copy "${PY_ENV0_DIR}"
             curl -sS "${GET_PIP_URL}" | "${PY_ENV0_DIR}/bin/python" - ${PIP_OPTIONS}
-            "${PY_ENV0_DIR}/bin/pip" install ${PIP_OPTIONS} "${VENV_FILE}"
+            venv_pip install ${PIP_OPTIONS} "${VENV_FILE}"
             rm -rf "${VENV_DIRNAME}" "${VENV_FILE}"
 
             . "${PY_ENV0_DIR}/bin/activate"
-            pip install ${PIP_OPTIONS} -U pip setuptools wheel
-            pip install ${PIP_OPTIONS} -U magicreq
+            venv_pip install ${PIP_OPTIONS} -U pip setuptools wheel
+            venv_pip install ${PIP_OPTIONS} -U magicreq
         """ % (
             pipes.quote(PY_ENV0_DIR),
             pipes.quote(pip_options),
