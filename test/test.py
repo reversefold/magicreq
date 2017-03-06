@@ -31,7 +31,7 @@ except Exception as exc:
             # get_pip_url=GET_PIP_URL
         )
     except ImportError:
-        url = 'https://raw.githubusercontent.com/reversefold/magicreq/0.4.1/magicreq/bootstrap.py'
+        url = 'https://raw.githubusercontent.com/reversefold/magicreq/0.4.2/magicreq/bootstrap.py'
         # url = 'https://raw.githubusercontent.com/reversefold/magicreq/master/magicreq/bootstrap.py'
         # url = 'http://localhost:8000/magicreq/bootstrap.py'
         curl = subprocess.Popen(['curl', '-sS', url], stdout=subprocess.PIPE)
