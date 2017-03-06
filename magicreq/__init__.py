@@ -38,7 +38,7 @@ def magic(requirements, pip_options=None, pypi_url=None, venv_version=None, get_
                 function venv_pip() {
                     "${PY_ENV0_DIR}/bin/python" "${PY_ENV0_DIR}/bin/pip" "$@"
                 }
-                vevv_pip install ${PIP_OPTIONS} %s
+                venv_pip install ${PIP_OPTIONS} %s
             """ % (
                 pipes.quote(bootstrap.PY_ENV0_DIR),
                 pipes.quote(pip_options if pip_options is not None else ''),
