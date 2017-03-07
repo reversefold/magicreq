@@ -35,7 +35,7 @@ def magic(requirements, pip_options=None, pypi_url=None, venv_version=None, get_
                 PIP_OPTIONS=%s
                 # Note: This is needed to support running magicreq when the path includes a space as
                 # the pip script in the virtualenv will have a broken shebang in it.
-                function venv_pip() {
+                venv_pip() {
                     "${PY_ENV0_DIR}/bin/python" "${PY_ENV0_DIR}/bin/pip" "$@"
                 }
                 venv_pip install ${PIP_OPTIONS} %s

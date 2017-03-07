@@ -57,7 +57,7 @@ def bootstrap(pip_options=None, venv_version=None, pypi_url=None, get_pip_url=No
             GET_PIP_URL=%s
             # Note: This is needed to support running magicreq when the path includes a space as
             # the pip script in the virtualenv will have a broken shebang in it.
-            function venv_pip() {
+            venv_pip() {
                 "${PY_ENV0_DIR}/bin/python" "${PY_ENV0_DIR}/bin/pip" "$@"
             }
 
