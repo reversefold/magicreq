@@ -4,8 +4,8 @@
 """
 from __future__ import print_function
 import os
-import subprocess
 import sys
+import urllib2
 
 REQUIREMENTS = [line.strip() for line in iter(open('requirements.txt').readline, '') if line.strip()]
 
@@ -34,21 +34,18 @@ except Exception as exc:
         url = 'https://raw.githubusercontent.com/reversefold/magicreq/0.4.3/magicreq/bootstrap.py'
         # url = 'https://raw.githubusercontent.com/reversefold/magicreq/master/magicreq/bootstrap.py'
         # url = 'http://localhost:8000/magicreq/bootstrap.py'
-        curl = subprocess.Popen(['curl', '-sS', url], stdout=subprocess.PIPE)
-        python = subprocess.Popen(
-            [
-                sys.executable,
-                '-',
-                # 'PIP_OPTIONS:%s' % (PIP_OPTIONS,),
-                # 'VENV_VERSION:%s' % (VENV_VERSION,),
-                # 'PYPI_URL:%s' % (PYPI_URL,),
-                # 'GET_PIP_URL:%s' % (GET_PIP_URL,),
-            ] + sys.argv,
-            stdin=curl.stdout
-        )
-        curl.wait()
-        python.wait()
-        sys.exit(curl.returncode or python.returncode)
+        bootstrap_script = os.path.join(os.getcwd(), '.magicreq_bootstrap.py')
+        with open(bootstrap_script, 'w') as outfile:
+            outfile.write(urllib2.urlopen(url).read())
+        cmd = [
+            sys.executable,
+            bootstrap_script,
+            # 'PIP_OPTIONS:%s' % (PIP_OPTIONS,),
+            # 'VENV_VERSION:%s' % (VENV_VERSION,),
+            # 'PYPI_URL:%s' % (PYPI_URL,),
+            # 'GET_PIP_URL:%s' % (GET_PIP_URL,),
+        ] + sys.argv
+        os.execv(sys.executable, cmd)
 
 
 import docopt
