@@ -228,7 +228,18 @@ except Exception as exc:
         sys.exit(curl.returncode or python.returncode)
 ```
 
+# How magicreq works
+This is a simplified timeline of what happens when a script (named script.py in this example) is run in an environment without magicreq installed.
+1. script.py is run with a python executable
+2. magicreq is not installed so the bootstrap script gets downloaded and run (this run waits on the subprocesses to finish, then ends at the sys.exit call at the end of the boilerplate once the entire script finishes)
+3. the bootstrap script bootstraps virtualenv, creates a local virtualenv, and installs magicreq in the virtualenv
+4. the bootstrap script reruns script.py with the python executable in the virtualenv (via os.execv, so it replaces the bootstrap script's process)
+5. this time, the magicreq.magic method gets called but the requirements are not installed in the virtualenv
+6. magicreq installs the requirements into the virtualenv
+7. magicreq reruns script.py with the python executable in the virtualenv again (via os.execv, so it replaces the current process process)
+8. magicreq is installed and all of the requirements are satisfied so the script continues past the boilerplate
 
+At this point, there are two python executables, one which was running the original copy of script.py and which ends at the sys.exit at the bottom of the boulerplate. The other is running script.py from within the bootstrapped virtualenv. This could potentially lead to problems with signalling the original script as the signals may not be passed down as expected to the child process which is running the original script. This could potentially be fixed by using os.execv in the boilerplate as well, but for now sys.exit() is used to simplify the boilerplate code.
 
 
 Available on [pypi](https://pypi.python.org/pypi/magicreq).
