@@ -48,7 +48,7 @@ def bootstrap(pip_options=None, venv_version=None, pypi_url=None, get_pip_url=No
 
     subprocess.check_call(
         """
-            set -e
+            set -ex
             PY_ENV0_DIR=%s
             PIP_OPTIONS=%s
             VENV_DIRNAME=%s

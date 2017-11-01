@@ -29,7 +29,7 @@ def magic(requirements, pip_options=None, pypi_url=None, venv_version=None, get_
             )
         subprocess.check_call(
             """
-                set -e
+                set -ex
                 PY_ENV0_DIR=%s
                 . "${PY_ENV0_DIR}/bin/activate"
                 PIP_OPTIONS=%s
