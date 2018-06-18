@@ -42,9 +42,12 @@ def bootstrap(pip_options=None, venv_version=None, pypi_url=None, get_pip_url=No
     if not found:
         raise Error('Could not find virtualenv version %r with pypi url %r' % (venv_version, pypi_url))
     href = found[0].attrib['href']
-    if not href.startswith('../../'):
-        raise Error('Found virtualenv href does not start with "../../": %r' % (href,))
-    venv_url = '%s/%s' % (pypi_url, href[6:])
+    if href.startswith('../../'):
+        venv_url = '%s/%s' % (pypi_url, href[6:])
+    elif href.startswith('http://') or href.startswith('https://'):
+        venv_url = href
+    else:
+        raise Error('Found virtualenv href not understood: %s' % (href,))
 
     subprocess.check_call(
         """
