@@ -27,7 +27,7 @@ def bootstrap(pip_options=None, venv_version=None, pypi_url=None, get_pip_url=No
     if venv_version is None:
         venv_version = '16.0.0'
     if pypi_url is None:
-        pypi_url = 'https://pypi.python.org'
+        pypi_url = 'https://pypi.org'
     if get_pip_url is None:
         get_pip_url = 'https://bootstrap.pypa.io/get-pip.py'
 
