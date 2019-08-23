@@ -4,7 +4,10 @@ import os
 import pipes
 import subprocess
 import sys
-import urllib2
+try:
+    from urllib import request
+except ImportError:
+    import urllib2 as request
 
 
 PY_ENV0_DIR = '_venv'
@@ -37,7 +40,7 @@ def bootstrap(pip_options=None, venv_version=None, pypi_url=None, get_pip_url=No
     venv_file = '%s.tar.gz' % (venv_dirname,)
 
     # Note: Would use the json or xmlrpc APIs but we need to use the simple API to support artifactory
-    tree = ElementTree.parse(urllib2.urlopen('%s/simple/virtualenv/' % (pypi_url,)))
+    tree = ElementTree.parse(request.urlopen('%s/simple/virtualenv/' % (pypi_url,)))
     found = [a for a in tree.getroot().find('body').findall('a') if a.text == venv_file]
     if not found:
         raise Error('Could not find virtualenv version %r with pypi url %r' % (venv_version, pypi_url))

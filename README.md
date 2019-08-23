@@ -21,7 +21,10 @@ from __future__ import print_function
 # START boilerplate imports
 import os
 import sys
-import urllib2
+try:
+    from urllib import request
+except ImportError:
+    import urllib2 as request
 # END boilerplate imports
 
 # put your remaining builtin imports here
@@ -47,12 +50,13 @@ except ImportError:
         # Download the bootstrap script
         bootstrap_script = os.path.join(os.getcwd(), '.magicreq_bootstrap.py')
         with open(bootstrap_script, 'w') as outfile:
-            outfile.write(urllib2.urlopen('https://raw.githubusercontent.com/reversefold/magicreq/0.5.0/magicreq/bootstrap.py').read())
+            outfile.write(request.urlopen('https://raw.githubusercontent.com/reversefold/magicreq/0.5.0/magicreq/bootstrap.py').read())
         # Run the bootstrap script, replacing the current executable
         os.execv(sys.executable, [sys.executable, bootstrap_script] + sys.argv)
 # END boilerplate
 
 # Your script goes here
+
 
 def main():
     print(requests.get('http://example.org').text)
@@ -116,7 +120,10 @@ from __future__ import print_function
 # START boilerplate imports
 import os
 import sys
-import urllib2
+try:
+    from urllib import request
+except ImportError:
+    import urllib2 as request
 # END boilerplate imports
 
 # put your remaining builtin imports here
@@ -150,7 +157,7 @@ except Exception as exc:
         # Download the bootstrap script
         bootstrap_script = os.path.join(os.getcwd(), '.magicreq_bootstrap.py')
         with open(bootstrap_script, 'w') as outfile:
-            outfile.write(urllib2.urlopen('https://raw.githubusercontent.com/reversefold/magicreq/0.5.0/magicreq/bootstrap.py').read())
+            outfile.write(request.urlopen('https://raw.githubusercontent.com/reversefold/magicreq/0.5.0/magicreq/bootstrap.py').read())
         # Run the bootstrap script, replacing the current executable
         os.execv(sys.executable, [sys.executable, bootstrap_script] + sys.argv)
 # END boilerplate
@@ -213,7 +220,7 @@ except Exception as exc:
     except ImportError:
         bootstrap_script = os.path.join(os.getcwd(), '.magicreq_bootstrap.py')
         with open(bootstrap_script, 'w') as outfile:
-            outfile.write(urllib2.urlopen(MAGICREQ_BOOTSTRAP_URL).read())
+            outfile.write(request.urlopen(MAGICREQ_BOOTSTRAP_URL).read())
         cmd = [
             sys.executable,
             bootstrap_script,

@@ -5,7 +5,10 @@
 from __future__ import print_function
 import os
 import sys
-import urllib2
+try:
+    from urllib import request
+except ImportError:
+    import urllib2 as request
 
 REQUIREMENTS = [line.strip() for line in iter(open('requirements.txt').readline, '') if line.strip()]
 
@@ -36,7 +39,7 @@ except Exception as exc:
         # url = 'http://localhost:8000/magicreq/bootstrap.py'
         bootstrap_script = os.path.join(os.getcwd(), '.magicreq_bootstrap.py')
         with open(bootstrap_script, 'w') as outfile:
-            outfile.write(urllib2.urlopen(url).read())
+            outfile.write(request.urlopen(url).read())
         cmd = [
             sys.executable,
             bootstrap_script,
