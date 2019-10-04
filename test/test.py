@@ -5,15 +5,19 @@
 from __future__ import print_function
 import os
 import sys
+
 try:
     from urllib import request
 except ImportError:
     import urllib2 as request
 
-REQUIREMENTS = [line.strip() for line in iter(open('requirements.txt').readline, '') if line.strip()]
+REQUIREMENTS = [
+    line.strip() for line in iter(open("requirements.txt").readline, "") if line.strip()
+]
 
 try:
     import pkg_resources
+
     pkg_resources.require(REQUIREMENTS)
     # import docopt
     # import requests
@@ -22,10 +26,11 @@ except Exception as exc:
     # VENV_VERSION = '15.0.2'
     # PYPI_URL = 'http://localhost:8080/api/pypi/pypi'
     # GET_PIP_URL = 'http://localhost:8080/get-pip.py'
-    if __name__ != '__main__':
+    if __name__ != "__main__":
         raise
     try:
         import magicreq
+
         magicreq.magic(
             REQUIREMENTS,
             # pip_options=PIP_OPTIONS,
@@ -34,11 +39,11 @@ except Exception as exc:
             # get_pip_url=GET_PIP_URL
         )
     except ImportError:
-        url = 'https://raw.githubusercontent.com/reversefold/magicreq/0.4.3/magicreq/bootstrap.py'
+        url = "https://raw.githubusercontent.com/reversefold/magicreq/0.4.3/magicreq/bootstrap.py"
         # url = 'https://raw.githubusercontent.com/reversefold/magicreq/master/magicreq/bootstrap.py'
         # url = 'http://localhost:8000/magicreq/bootstrap.py'
-        bootstrap_script = os.path.join(os.getcwd(), '.magicreq_bootstrap.py')
-        with open(bootstrap_script, 'wb') as outfile:
+        bootstrap_script = os.path.join(os.getcwd(), ".magicreq_bootstrap.py")
+        with open(bootstrap_script, "wb") as outfile:
             outfile.write(request.urlopen(url).read())
         cmd = [
             sys.executable,
@@ -56,10 +61,10 @@ import requests
 
 
 def main():
-    args = docopt.docopt(__doc__ % {'script': os.path.basename(__file__)})
-    print(requests.get(args['<url>']).text)
+    args = docopt.docopt(__doc__ % {"script": os.path.basename(__file__)})
+    print(requests.get(args["<url>"]).text)
     sys.exit(13)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -7,14 +7,18 @@ import sys
 from magicreq import bootstrap
 
 
-def magic(requirements, pip_options=None, pypi_url=None, venv_version=None, get_pip_url=None):
-    if len(sys.argv) > 1 and sys.argv[1] == '--bootstrapped':
+def magic(
+    requirements, pip_options=None, pypi_url=None, venv_version=None, get_pip_url=None
+):
+    if len(sys.argv) > 1 and sys.argv[1] == "--bootstrapped":
         bootstrapped = True
         in_venv = True
         sys.argv = [sys.argv[0]] + sys.argv[2:]
     else:
         bootstrapped = False
-        in_venv = os.path.realpath(sys.executable) == os.path.realpath(bootstrap.VENV_PYTHON)
+        in_venv = os.path.realpath(sys.executable) == os.path.realpath(
+            bootstrap.VENV_PYTHON
+        )
 
     # Bootstrap a python virtualenv which does not rely on any os-level installed packages.
     # If the virtualenv already appears to exist, try running it without recreating the virtualenv first.
@@ -25,7 +29,7 @@ def magic(requirements, pip_options=None, pypi_url=None, venv_version=None, get_
                 pip_options=pip_options,
                 pypi_url=pypi_url,
                 venv_version=venv_version,
-                get_pip_url=get_pip_url
+                get_pip_url=get_pip_url,
             )
         subprocess.check_call(
             """
@@ -39,13 +43,14 @@ def magic(requirements, pip_options=None, pypi_url=None, venv_version=None, get_
                     "${PY_ENV0_DIR}/bin/python" "${PY_ENV0_DIR}/bin/pip" "$@"
                 }
                 venv_pip install ${PIP_OPTIONS} %s
-            """ % (
+            """
+            % (
                 pipes.quote(bootstrap.PY_ENV0_DIR),
-                pipes.quote(pip_options if pip_options is not None else ''),
-                ' '.join(pipes.quote(r) for r in requirements),
+                pipes.quote(pip_options if pip_options is not None else ""),
+                " ".join(pipes.quote(r) for r in requirements),
             ),
             shell=True,
-            stdout=sys.stderr
+            stdout=sys.stderr,
         )
     # call this script again using the virtualenv's python
     # if os.path.basename(sys.argv[0]) == 'python':

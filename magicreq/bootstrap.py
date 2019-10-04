@@ -4,19 +4,20 @@ import os
 import pipes
 import subprocess
 import sys
+
 try:
     from urllib import request
 except ImportError:
     import urllib2 as request
 
 
-PY_ENV0_DIR = '_venv'
-PY_ENV0_BIN = os.path.join(PY_ENV0_DIR, 'bin')
-VENV_PYTHON = os.path.join(PY_ENV0_BIN, 'python')
-PIP_OPTIONS_PREFIX = 'PIP_OPTIONS'
-VENV_VERSION_PREFIX = 'VENV_VERSION'
-PYIPI_URL_PREFIX = 'PYPI_URL'
-GET_PIP_URL_PREFIX = 'GET_PIP_URL'
+PY_ENV0_DIR = "_venv"
+PY_ENV0_BIN = os.path.join(PY_ENV0_DIR, "bin")
+VENV_PYTHON = os.path.join(PY_ENV0_BIN, "python")
+PIP_OPTIONS_PREFIX = "PIP_OPTIONS"
+VENV_VERSION_PREFIX = "VENV_VERSION"
+PYIPI_URL_PREFIX = "PYPI_URL"
+GET_PIP_URL_PREFIX = "GET_PIP_URL"
 
 
 class Error(Exception):
@@ -26,31 +27,34 @@ class Error(Exception):
 # Bootstrap a python virtualenv which does not rely on any os-level installed packages.
 def bootstrap(pip_options=None, venv_version=None, pypi_url=None, get_pip_url=None):
     if pip_options is None:
-        pip_options = ''
+        pip_options = ""
     if venv_version is None:
-        venv_version = '16.0.0'
+        venv_version = "16.0.0"
     if pypi_url is None:
-        pypi_url = 'https://pypi.org'
+        pypi_url = "https://pypi.org"
     if get_pip_url is None:
-        get_pip_url = 'https://bootstrap.pypa.io/get-pip.py'
+        get_pip_url = "https://bootstrap.pypa.io/get-pip.py"
 
     # TODO: Automatically put pypi_url in pip_options?
 
-    venv_dirname = 'virtualenv-%s' % (venv_version,)
-    venv_file = '%s.tar.gz' % (venv_dirname,)
+    venv_dirname = "virtualenv-%s" % (venv_version,)
+    venv_file = "%s.tar.gz" % (venv_dirname,)
 
     # Note: Would use the json or xmlrpc APIs but we need to use the simple API to support artifactory
-    tree = ElementTree.parse(request.urlopen('%s/simple/virtualenv/' % (pypi_url,)))
-    found = [a for a in tree.getroot().find('body').findall('a') if a.text == venv_file]
+    tree = ElementTree.parse(request.urlopen("%s/simple/virtualenv/" % (pypi_url,)))
+    found = [a for a in tree.getroot().find("body").findall("a") if a.text == venv_file]
     if not found:
-        raise Error('Could not find virtualenv version %r with pypi url %r' % (venv_version, pypi_url))
-    href = found[0].attrib['href']
-    if href.startswith('../../'):
-        venv_url = '%s/%s' % (pypi_url, href[6:])
-    elif href.startswith('http://') or href.startswith('https://'):
+        raise Error(
+            "Could not find virtualenv version %r with pypi url %r"
+            % (venv_version, pypi_url)
+        )
+    href = found[0].attrib["href"]
+    if href.startswith("../../"):
+        venv_url = "%s/%s" % (pypi_url, href[6:])
+    elif href.startswith("http://") or href.startswith("https://"):
         venv_url = href
     else:
-        raise Error('Found virtualenv href not understood: %s' % (href,))
+        raise Error("Found virtualenv href not understood: %s" % (href,))
 
     subprocess.check_call(
         """
@@ -80,7 +84,8 @@ def bootstrap(pip_options=None, venv_version=None, pypi_url=None, get_pip_url=No
             . "${PY_ENV0_DIR}/bin/activate"
             venv_pip install ${PIP_OPTIONS} -U pip setuptools wheel
             venv_pip install ${PIP_OPTIONS} -U magicreq
-        """ % (
+        """
+        % (
             pipes.quote(PY_ENV0_DIR),
             pipes.quote(pip_options),
             pipes.quote(venv_dirname),
@@ -90,7 +95,7 @@ def bootstrap(pip_options=None, venv_version=None, pypi_url=None, get_pip_url=No
             pipes.quote(sys.executable),
         ),
         shell=True,
-        stdout=sys.stderr
+        stdout=sys.stderr,
     )
 
 
@@ -100,24 +105,26 @@ def main():
     while found:
         found = False
         for prefix in [
-            PIP_OPTIONS_PREFIX, VENV_VERSION_PREFIX, PYIPI_URL_PREFIX, GET_PIP_URL_PREFIX
+            PIP_OPTIONS_PREFIX,
+            VENV_VERSION_PREFIX,
+            PYIPI_URL_PREFIX,
+            GET_PIP_URL_PREFIX,
         ]:
             if len(sys.argv) > 1 and sys.argv[1].startswith(prefix):
                 found = True
-                kwargs[prefix.lower()] = sys.argv[1][len(prefix) + 1:]
+                kwargs[prefix.lower()] = sys.argv[1][len(prefix) + 1 :]
                 sys.argv = sys.argv[0:1] + sys.argv[2:]
 
     bootstrap(**kwargs)
     # update the PATH to include the virtualenv's bin directory
-    os.environ['PATH'] = os.pathsep.join(
-        [PY_ENV0_BIN]
-        + os.environ.get('PATH', '').split(os.pathsep)
+    os.environ["PATH"] = os.pathsep.join(
+        [PY_ENV0_BIN] + os.environ.get("PATH", "").split(os.pathsep)
     )
     # call this script again using the virtualenv's python
-    os.execv(VENV_PYTHON, [VENV_PYTHON, sys.argv[1], '--bootstrapped'] + sys.argv[2:])
+    os.execv(VENV_PYTHON, [VENV_PYTHON, sys.argv[1], "--bootstrapped"] + sys.argv[2:])
     # should never be called, but include it for safety
     sys.exit(-99)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
