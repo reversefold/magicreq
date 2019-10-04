@@ -38,7 +38,7 @@ except Exception as exc:
         # url = 'https://raw.githubusercontent.com/reversefold/magicreq/master/magicreq/bootstrap.py'
         # url = 'http://localhost:8000/magicreq/bootstrap.py'
         bootstrap_script = os.path.join(os.getcwd(), '.magicreq_bootstrap.py')
-        with open(bootstrap_script, 'w') as outfile:
+        with open(bootstrap_script, 'wb') as outfile:
             outfile.write(request.urlopen(url).read())
         cmd = [
             sys.executable,

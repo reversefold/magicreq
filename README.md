@@ -49,7 +49,7 @@ except ImportError:
 
         # Download the bootstrap script
         bootstrap_script = os.path.join(os.getcwd(), '.magicreq_bootstrap.py')
-        with open(bootstrap_script, 'w') as outfile:
+        with open(bootstrap_script, 'wb') as outfile:
             outfile.write(request.urlopen('https://raw.githubusercontent.com/reversefold/magicreq/0.6.0/magicreq/bootstrap.py').read())
         # Run the bootstrap script, replacing the current executable
         os.execv(sys.executable, [sys.executable, bootstrap_script] + sys.argv)
@@ -156,7 +156,7 @@ except Exception as exc:
 
         # Download the bootstrap script
         bootstrap_script = os.path.join(os.getcwd(), '.magicreq_bootstrap.py')
-        with open(bootstrap_script, 'w') as outfile:
+        with open(bootstrap_script, 'wb') as outfile:
             outfile.write(request.urlopen('https://raw.githubusercontent.com/reversefold/magicreq/0.6.0/magicreq/bootstrap.py').read())
         # Run the bootstrap script, replacing the current executable
         os.execv(sys.executable, [sys.executable, bootstrap_script] + sys.argv)
@@ -219,7 +219,7 @@ except Exception as exc:
         )
     except ImportError:
         bootstrap_script = os.path.join(os.getcwd(), '.magicreq_bootstrap.py')
-        with open(bootstrap_script, 'w') as outfile:
+        with open(bootstrap_script, 'wb') as outfile:
             outfile.write(request.urlopen(MAGICREQ_BOOTSTRAP_URL).read())
         cmd = [
             sys.executable,
